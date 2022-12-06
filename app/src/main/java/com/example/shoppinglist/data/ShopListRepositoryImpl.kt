@@ -6,7 +6,8 @@ import com.example.shoppinglist.domain.ShopListRepository
 import java.lang.RuntimeException
 
 object ShopListRepositoryImpl : ShopListRepository{
-    private val _shopList = mutableListOf<ShopItem>()
+
+    private val _shopList = sortedSetOf<ShopItem>({ o1, o2 -> o1.id.compareTo(o2.id)})
     private val _shopListLiveData = MutableLiveData<List<ShopItem>>()
     private var _autoIncrementedID = 0
 
