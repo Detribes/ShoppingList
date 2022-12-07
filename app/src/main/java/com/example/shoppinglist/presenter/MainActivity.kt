@@ -2,49 +2,53 @@ package com.example.shoppinglist.presenter
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var _viewModel :MainViewModel
-    private lateinit var _llShopeList :LinearLayout
+    private lateinit var _viewModel: MainViewModel
+    private lateinit var _adapter: ShopListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        _llShopeList = findViewById(R.id.llShopList)
+        _setupRecyclerView()
         _viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         _viewModel.shopList.observe(this) {
-            _showList(it)
+            _adapter.shopList = it
         }
     }
-    private fun _showList(list :List<ShopItem>) {
-        _llShopeList.removeAllViews()
-
-        for(shopItem in list){
-            val layoutId = if(shopItem.active) {
-                R.layout.item_shop_enabled
-            } else {
-                R.layout.item_shop_disabled
-            }
-            val view = LayoutInflater.from(this).inflate(layoutId, _llShopeList,false)
-            val tvName = view.findViewById<TextView>(R.id.tvName)
-            val tvCount = view.findViewById<TextView>(R.id.tvCount)
-
-            tvName.text = shopItem.name
-            tvCount.text = shopItem.count.toString()
-
-            view.setOnLongClickListener {
+    /*Setup RV params to use*/
+    private fun _setupRecyclerView() {
+        val rvShopList = findViewById<RecyclerView>(R.id.rvShopList)
+        _adapter = ShopListAdapter()
+        with(rvShopList) {
+            adapter = _adapter
+            recycledViewPool.setMaxRecycledViews(
+                ShopListAdapter.VIEW_TYPE_ENABLED,
+                ShopListAdapter.MAX_POOL_SIZE
+            )
+            recycledViewPool.setMaxRecycledViews(
+                ShopListAdapter.VIEW_TYPE_DISABLED,
+                ShopListAdapter.MAX_POOL_SIZE
+            )
+        }
+        _adapter.onShopItemLongClickListener = object :ShopListAdapter.OnShopItemLongClickListener {
+            override fun onShopItemLongClickListener(shopItem: ShopItem) {
                 _viewModel.changeActiveState(shopItem)
-                true //True variarty needs for correctly work of SOLCL. These may be False var
             }
-
-            _llShopeList.addView(view)
+        }
+        _adapter.onShopItemClickListener = object :ShopListAdapter.OnShopItemClickListener {
+            override fun onShopItemClickListener(shopItem: ShopItem) {
+                Log.d("ObjectParams", "count: ${shopItem.count} state: ${shopItem.active}")
+            }
         }
     }
 }
