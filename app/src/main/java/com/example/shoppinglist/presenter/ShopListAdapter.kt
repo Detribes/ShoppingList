@@ -1,30 +1,21 @@
 package com.example.shoppinglist.presenter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.ListAdapter
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
 import java.lang.RuntimeException
 
-class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>() {
+class ShopListAdapter : ListAdapter<ShopItem, ShopItemViewHolder>(ShopItemDiffCallback()) {
 
-    var shopList = listOf<ShopItem>()
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
     var onShopItemLongClickListener :OnShopItemLongClickListener? = null
     var onShopItemClickListener :OnShopItemClickListener? = null
 
-    class ShopItemViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-        val tvName = view.findViewById<TextView>(R.id.tvName)
-        val tvCount = view.findViewById<TextView>(R.id.tvCount)
-    }
-
+    /*ViewHolder for adapter creates in his method.
+    VH very useful to create metadata for Adapter to reuse it
+     */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopItemViewHolder {
         val layout = when (viewType) {
             VIEW_TYPE_ENABLED -> R.layout.item_shop_enabled
@@ -40,7 +31,7 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     }
 
     override fun onBindViewHolder(holder: ShopItemViewHolder, position: Int) {
-        val shopItem = shopList[position]
+        val shopItem = getItem(position)
         holder.view.setOnLongClickListener {
             onShopItemLongClickListener?.onShopItemLongClickListener(shopItem)
             true
@@ -53,9 +44,9 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
     }
     /* That method takes position of list of objects
     and return a number that appear that obj is active or unactive
-     */
+     Result of this method comes to parameter in onCreateViewHolder as viewType*/
     override fun getItemViewType(position: Int): Int {
-        val item = shopList[position]
+        val item = getItem(position)
         return if (item.active) {
             VIEW_TYPE_ENABLED
         } else {
@@ -74,10 +65,6 @@ class ShopListAdapter : RecyclerView.Adapter<ShopListAdapter.ShopItemViewHolder>
                 android.R.color.white
             )
         )
-    }
-
-    override fun getItemCount(): Int {
-        return shopList.size
     }
 
     /*Interface that use to set on click listener
