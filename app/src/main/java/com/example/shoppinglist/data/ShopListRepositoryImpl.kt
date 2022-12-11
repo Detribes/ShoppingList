@@ -11,13 +11,13 @@ object ShopListRepositoryImpl : ShopListRepository{
     private val _shopList = sortedSetOf<ShopItem>({ o1, o2 -> o1.id.compareTo(o2.id)})
     private val _shopListLiveData = MutableLiveData<List<ShopItem>>()
     private var _autoIncrementedID = 0
-
-    init{
-        for(i in 0 until 30){
-            val item = ShopItem("Name $i", i, Random.nextBoolean())
-            addShopItem(item)
-        }
-    }
+//
+//    init{
+//        for(i in 0 until 30){
+//            val item = ShopItem("Name $i", i, Random.nextBoolean())
+//            addShopItem(item)
+//        }
+//    }
 
     override fun addShopItem(shopItem: ShopItem) {
         if(shopItem.id == ShopItem.UNDEFINED_ID) shopItem.id = _autoIncrementedID++

@@ -3,14 +3,12 @@ package com.example.shoppinglist.presenter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shoppinglist.R
 import com.example.shoppinglist.domain.ShopItem
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,6 +23,12 @@ class MainActivity : AppCompatActivity() {
         _viewModel.shopList.observe(this) {
             _adapter.submitList(it)
         }
+        val buttonAddItem = findViewById<FloatingActionButton>(R.id.buttonAddShopItem)
+        buttonAddItem.setOnClickListener{
+            val intent = ShopItemActivity.newIntentAddItem(this)
+            startActivity(intent)
+        }
+
     }
 
     /*Setup RV params to use*/
@@ -42,12 +46,12 @@ class MainActivity : AppCompatActivity() {
                 ShopListAdapter.MAX_POOL_SIZE
             )
         }
-        setupOnLongClickListener()
-        setupOnClickListener()
-        setupOnSwipeListener(rvShopList)
+        _setupOnLongClickListener()
+        _setupOnClickListener()
+        _setupOnSwipeListener(rvShopList)
     }
 
-    private fun setupOnSwipeListener(rvShopList: RecyclerView) {
+    private fun _setupOnSwipeListener(rvShopList: RecyclerView) {
         val callback = object : ItemTouchHelper.SimpleCallback(
             0,
             ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
@@ -69,15 +73,17 @@ class MainActivity : AppCompatActivity() {
         itemTouchHelper.attachToRecyclerView(rvShopList)
     }
 
-    private fun setupOnClickListener() {
+    private fun _setupOnClickListener() {
         _adapter.onShopItemClickListener = object : ShopListAdapter.OnShopItemClickListener {
             override fun onShopItemClickListener(shopItem: ShopItem) {
                 Log.d("ObjectParams", "count: ${shopItem.count} state: ${shopItem.active}")
+                val intent = ShopItemActivity.newIntentEditItem(this@MainActivity, shopItem.id)
+                startActivity(intent)
             }
         }
     }
 
-    private fun setupOnLongClickListener() {
+    private fun _setupOnLongClickListener() {
         _adapter.onShopItemLongClickListener =
             object : ShopListAdapter.OnShopItemLongClickListener {
                 override fun onShopItemLongClickListener(shopItem: ShopItem) {

@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_shop_item.xml" value="0.22056159420289856" />
         <entry key="app/src/main/res/layout/item_shop_disabled.xml" value="0.1703125" />
         <entry key="app/src/main/res/layout/item_shop_enabled.xml" value="0.1703125" />
       </map>
