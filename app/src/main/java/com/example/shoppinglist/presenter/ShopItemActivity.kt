@@ -22,7 +22,7 @@ class ShopItemActivity : AppCompatActivity(), ShopItemFragment.OnEditingFinished
 //    private lateinit var _etName: EditText
 //    private lateinit var _etCount: EditText
 //    private lateinit var _buttonSave:Button
-//
+
     private var _screenMode = UNDEFINED_MODE
     private var _shopItemId = ShopItem.UNDEFINED_ID
 
